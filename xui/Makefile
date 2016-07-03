@@ -31,6 +31,7 @@ CFLAGS=
 PREFIX=/usr
 BINDIR=$(PREFIX)/games
 LIBDIR=$(PREFIX)/lib/games/netmaj
+DESKTOPDIR=$(PREFIX)/share/applications
 CP1=$(INSTALL) -s
 CP2=$(INSTALL) -c
 
@@ -51,6 +52,8 @@ install: all
 	$(CP1) src/xui/xclient ${DESTDIR}$(LIBDIR)
 	$(CP1) src/xui/xnetmaj1 ${DESTDIR}$(LIBDIR)
 	$(CP1) src/xui/xplview ${DESTDIR}$(LIBDIR)
+	mkdir -p ${DESTDIR}$(DESKTOPDIR)
+	$(CP2) netmaj.desktop ${DESTDIR}$(DESKTOPDIR)
 
 install-pf:
 	-if test -d ${DESTDIR}$(LIBDIR); then \
