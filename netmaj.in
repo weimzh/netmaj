@@ -1,0 +1,94 @@
+#!/bin/sh
+PATH="LIBDIR:BINDIR:/bin:/usr/bin:/usr/X11R6/bin:/usr/local/bin"
+export PATH
+
+PORT=""
+SKIP="NO"
+for i in $*
+do
+if [ $SKIP = "NO" ] 
+then
+    case $i in
+	-p)
+		PORT="-p $2"
+		shift
+		shift
+		SKIP="YES"
+		;;
+	-a)
+		shift
+		eval "auto $PORT $* &"
+		eval "auto $PORT $* &"
+		eval "auto $PORT $* &"
+		exit
+		;;
+	-a1)
+		shift
+		eval "auto $PORT $* &"
+		exit
+		;;
+	-a2)
+		shift
+		eval "auto $PORT $* &"
+		eval "auto $PORT $* &"
+		exit
+		;;
+	-a3)
+		shift
+		eval "auto $PORT $* &"
+		eval "auto $PORT $* &"
+		eval "auto $PORT $* &"
+		exit
+		;;
+	-s)
+		shift
+		eval "server_kill $PORT"
+		exec server $PORT $*
+		exit
+		;;
+	-k)
+		shift
+		exec server_kill $PORT $*
+		exit
+		;;
+	-1)
+		shift
+		exec xnetmaj1 -T large $PORT $*
+		exit
+		;;
+	-ps)
+		shift
+		exec proxyserver $*
+		exit
+		;;
+	-pc)
+		shift
+		exec proxyclient $*
+		exit
+		;;
+	-\?|-h|-help)
+		echo "usage:"
+		echo "    run server:"
+		echo "        netmaj [-p port] -s [-H|-Q] [-l logfile]"
+		echo "    kill server:"
+		echo "        netmaj [-p port] -k"
+		echo "    run auto:"
+		echo "        netmaj -a[123] [-p port] [-h host_name]"
+		echo "    run client (X11):"
+		echo "        netmaj [-p port] [-h host_name] [-l logfile]"
+		echo "    run client for one player only (X11): "
+		echo "        netmaj -1"
+		exit
+		;;
+	*)
+		exec xclient -T large $PORT $*
+		exit
+		;;
+    esac
+else
+    SKIP="NO"
+fi
+done
+
+exec xclient -T large $PORT $*
+exit

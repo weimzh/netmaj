@@ -1,0 +1,34 @@
+/* XPM */
+static char *bigton_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+". c #dddddd",
+"# c #808080",
+"a s None c None",
+/* pixels */
+"aaaaaaaaaaa.#aaaaaaaaaaa",
+"aaaaaaaaaaa..#aaaaaaaaaa",
+"aaaaaaaaaaaa.#aaaaaaaaaa",
+"aaaaaaaaaaaa.#aaaaaaaaaa",
+"aaaaaaa................a",
+"aa......................",
+"aaa###aaaaaa.#aaaaaaaaaa",
+"aaaaaa..............#aaa",
+"aaaa.................#aa",
+"aaaa..######.#####...#aa",
+"aaaa..#aaaaa.#aaaa...#aa",
+"aaaaa................#aa",
+"aaaaa.######.#####..#aaa",
+"aaaaa..aaaaa.#aaaa..#aaa",
+"aaaaa...............#aaa",
+"aaaaaa####....######aaaa",
+"aaaaaaaaa....#..aaaaaaaa",
+"aaaaaaaa...#.#...aaaaaaa",
+"aaaaa...##aa.#aa...#aaaa",
+"aaa....#aaaa.#aaaa....#a",
+"......aaaaaa.#aaaa......",
+"a..###aaaaaa.#aaaaaa....",
+"aaaaaaaaaaaa.#aaaaaaaa..",
+"aaaaaaaaaaa..#aaaaaaaaaa"
+};

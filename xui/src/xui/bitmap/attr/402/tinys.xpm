@@ -1,0 +1,14 @@
+/* XPM */
+static char * tinyS_xpm[] = {
+"8 8 3 1",
+" 	s None	c None",
+".	c black  ",
+"x	c white  ",
+"        ",
+" xx     ",
+"x  x    ",
+"x       ",
+" xx     ",
+"   x    ",
+"x  x    ",
+" xx     "};

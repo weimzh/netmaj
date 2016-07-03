@@ -1,0 +1,37 @@
+/* XPM */
+static char *bigpei_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+". c #dddddd",
+"# c #808080",
+"a s None c None",
+/* pixels */
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaa...#a..#aaaaaaaaa",
+"aaaaaaa...#a..##aaaaaaaa",
+"aaaaaaa...#a..##aaaaaaaa",
+"aaaaaaaa..#a..##aaaaaaaa",
+"aaaaaaaa..#a..##aaaaa.aa",
+"aaaaaaaa..#a..##aaa....#",
+"aaaaaaaa..#a..##aa...##a",
+"a.........#a..##a...##aa",
+"a.........#a..##..##aaaa",
+"aa######..#a.....#aaaaaa",
+"aaaaaaaa..#a..###aaaaaaa",
+"aaaaaaaa..#a..#aaaaaaaaa",
+"aaaaaaaa..#aa.#aaaaaaaaa",
+"aaaaaaaa..#aa.#aaaaaaaaa",
+"aaaaaaaa..#aa.#aaaaaaaaa",
+"aaaaaaaa..#aa.#aaaaaaaaa",
+"aaaaaa....#aa.#aaaaaaaaa",
+"......##..#aa.#aaaaaaaa.",
+"....##aa..#aa..aaaaaaaa.",
+"..##aaaa..#aa..aaaaaaa..",
+"##aaaaaa..#aa...........",
+"aaaaaaaa..#aa#.........#",
+"aaaaaaaa#a#aaa##......#a"
+};
+
+
+

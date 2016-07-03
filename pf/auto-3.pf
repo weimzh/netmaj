@@ -1,0 +1,23 @@
+#!/bin/sh
+# netmaj personal file
+exec auto -n auto-3 $*
+#
+# params
+param: chitoi = 600
+param: kokushi = 600
+param: toitoi = 600
+param: tanyao = 600
+param: color = 600
+param: yaku = 600
+
+param: random = 50
+param: dora = 100
+param: zone = 300
+param: suji = 100
+param: yomi = 1000
+
+param: kan = 000
+param: pon = 000
+param: tie = 000
+# result format
+#      NO  PNT  TN PN RN NN    TUMO        RON       FURI

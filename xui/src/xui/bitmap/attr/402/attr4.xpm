@@ -1,0 +1,9 @@
+/* XPM */
+static char * attr4_xpm[] = {
+"40 2 3 1",
+" 	s None	c None ",
+"w  c cornsilk        ",
+".  c DarkOrange        ",
+"wwwww ..... ..... wwwww                 ",
+"wwwww ..... ..... wwwww                 "};
+

@@ -1,0 +1,13 @@
+# netmaj personal file
+# params
+param: name = やくまん
+param: random = 100
+param: dora = 1000
+param: color = 1000
+param: zone = 1000
+param: deep = 1000
+param: reach = 0
+param: pon = 0
+
+# result format
+#      NO  PNT  TN PN RN NN    TUMO        RON       FURI

@@ -1,0 +1,23 @@
+/* XPM */
+static char * msgreach_xpm[] = {
+"50 17 3 1",
+"o 	s None	c None",
+".	c Red",
+"x	c HotPink",
+"oooooooooooooooooooooooooooooooooooooooooooooooooo",
+"oooooooooooooooooooooooooooooooooooooooooooooooooo",
+"oooooo.xoooooo.xooooooooooooooooooooooooooooo..xoo",
+"oooooo.xoooooo.xoooooooooooooooooooooooooo....xooo",
+"oooooo.xoooooo.xooooooooooooooooooooo......xoooooo",
+"oooooo.xoooooo.xoooooooooooooooooooooooooo.xoooooo",
+"oooooo.xoooooo.xoooooooooooooooooooooooooo.xoooooo",
+"oooooo.xoooooo.xooo.xooooooooooooooooooooo.xoooooo",
+"oooooo.xoooooo.xoooo.............xo..............x",
+"oooooo.xoooooo.xoooooooooooooooooooooooooo.xoooooo",
+"oooooooooooooo.xoooooooooooooooooooooooooo.xoooooo",
+"ooooooooooooo..xooooooooooooooooooooooooo..xoooooo",
+"ooooooooooooo.xoooooooooooooooooooooooooo.xooooooo",
+"oooooooooooo..xooooooooooooooooooooooooo..xooooooo",
+"ooooooooooo..xooooooooooooooooooooooooo..xoooooooo",
+"ooooooooo...xoooooooooooooooooooooooo...xooooooooo",
+"oooooooooooooooooooooooooooooooooooooooooooooooooo"};

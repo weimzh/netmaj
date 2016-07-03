@@ -1,0 +1,35 @@
+/* XPM */
+static char *mt_rest_str_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        4            1",
+/* colors */
+". c #dddddd",
+"# c #808080",
+"a c #c0c0c0",
+"b s None c None",
+/* pixels */
+"bbbbbbbb.bbbbbbbbbbbbbbb",
+"b.....bb.bb.bbbbbbbbbbbb",
+"bb.##bbb.bb..bbbbbbbbbbb",
+"bb.bbb.....b#bbbbbbbbbbb",
+"bb....b#.##..bbbbbbbbbbb",
+"b.##.bb....bbbbbbbbbbbbb",
+"...b.bb##.#...bbbbbbbbbb",
+".#...b.....bbbbbbbbbbbbb",
+"bbb.#.b##.b.bbbbbbbbbbbb",
+"bbb.bbbbbb..bbbbbbbbbbbb",
+"bb.#bbbbb..bbbbbbbbbbbbb",
+"..#bbbb...#..#bbbb..bbbb",
+".#bbb...#bb...bbbb.bbbbb",
+"bbbbbbbbbbbababb..#....#",
+"bbbbbbbbbbb.b.bb.#b.##.#",
+"bbbbbbbbbbb....b.......#",
+"bbbbbbbbbbb.##bb.##.#b.#",
+"bbbbbbbbbbb...bb......#b",
+"bbbbbbbbbbb.#.bb.##.##bb",
+"bbbbbbbbbbb.#...........",
+"bbbbbbbbbbb.b..b###.####",
+"bbbbbbbbbb.#b.#bbbb.#bbb",
+"bbbbbbbbbb.#b.#bbbb.#bbb",
+"bbbbbbbbbb.#b.#bbbb.#bbb"
+};

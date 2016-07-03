@@ -1,0 +1,34 @@
+/* XPM */
+static char *honba_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+". c #dddddd",
+"# c #808080",
+"a s None c None",
+/* pixels */
+"aaaaaa.aaaaaaaaaaaaaaaaa",
+"aaaaaa.#aaaaaaaaaaaaaaaa",
+"aaaaaa.#aaaaaaaaaaaaaaaa",
+"a............aaaaaaaaaaa",
+"a#####..####aaaaaaaaaaaa",
+"aaaaa..#.aaaaaaaaaaaaaaa",
+"aaaa.#.#.aaaaaaaaaaaaaaa",
+"aaa..a.#a.aaaaaaaaaaaaaa",
+"aa..#a.#aa.aaaaaaaaaaaaa",
+"a..#.........aaaaaaaaaaa",
+"..#aa#.###a...aaaaaaaaaa",
+"aaaaaa.#aaaaaaaa.....aaa",
+"aaaaaa..#aaa.aaa.###.#aa",
+"aaaaaaaaaaaa.#aa.....#aa",
+"aaaaaaaaaaaa.#aa.###.#aa",
+"aaaaaaaaaa.....a.....#aa",
+"aaaaaaaaaaa#.##aa####aaa",
+"aaaaaaaaaaaa.a..........",
+"aaaaaaaaaaaa.aaaa.aaaaaa",
+"aaaaaaaaaaaa..a........#",
+"aaaaaaaaaa...#..a.#.#a.#",
+"aaaaaaaaaa.#aaa..#.#a.##",
+"aaaaaaaaaaaaaa..#..#a.#a",
+"aaaaaaaaaaaaaaaa.a...##a"
+};

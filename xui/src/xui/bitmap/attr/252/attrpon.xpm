@@ -1,0 +1,8 @@
+/* XPM */
+static char * attrpon_xpm[] = {
+"25 2 3 1",
+" 	s None	c None ",
+".  c white     ",
+"w  c DarkOrange   ",
+"  ...... ...... ......   ",
+"  ...... ...... ......   "};

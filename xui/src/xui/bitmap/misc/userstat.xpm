@@ -1,0 +1,21 @@
+/* XPM */
+static char * userstate_xpm[] = {
+"24 14 4 1",
+" 	s None	c None ",
+".	c blue         ",
+"w  c white        ",
+"a  c skyblue      ",
+"                        ",
+"           wa           ",
+"         wwwaaa         ",
+"       wwwwwaaaaa       ",
+"     wwwwwwwaaaaaaa     ",
+"   wwwwwwwwwaaaaaaaaa   ",
+"wwwwwwwwwwwwaaaaaaaaaaaa",
+"aaaaaaaaaaaa............",
+"   aaaaaaaaa.........   ",
+"     aaaaaaa.......     ",
+"       aaaaa.....       ",
+"         aaa...         ",
+"           a.           ",
+"                        "};

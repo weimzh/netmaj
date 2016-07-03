@@ -1,0 +1,23 @@
+/* XPM */
+static char * fansfx_xpm[] = {
+"20 18 2 1",
+"X 	s None	c None ",
+"o	c yellow        ",
+"XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXoXXXXXXXXXXXX",
+"XXXXXoooXooooXooooXX",
+"XXXoooXXXXXXoXXXXoXX",
+"XXoXXoXXoXXXoXXXXoXX",
+"XXXoXoXoXXoXoXoXXoXX",
+"XXoooooooXXooXXoXoXX",
+"XXXXoooXXXXXoXXXXoXX",
+"XXXoXoXoXXXXoXXXXoXX",
+"XXoXXoXXoXXXoXXXXoXX",
+"XXXXXXXXXXXooXXXooXX",
+"XXXoooooXXoXoXXoXoXX",
+"XXXoXoXoXoXXoXoXXoXX",
+"XXXoooooXXXXoXXXXoXX",
+"XXXoXoXoXXXXoXXXXoXX",
+"XXXoXoXoXXXXoXXXXoXX",
+"XXXoooooXXoooXXoooXX",
+"XXXXXXXXXXXXXXXXXXXX"};

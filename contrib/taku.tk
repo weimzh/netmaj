@@ -1,0 +1,1682 @@
+#!/usr/bin/wish -f
+#
+#  NETMAJ - network mahjongg -  Copyright Notice
+#      Copyright (C) 1994, 1995, 1996 Koji Suzuki (suz@kt.rim.or.jp)
+# 
+#   You can redistribute it and/or modify this software under the terms 
+#  of the GNU General Public License version 2 as published by
+#  the Free Software Foundation.
+# 
+#   This software is provided 'as-is', without any express or implied
+#  warranty.  In no event will the author be held liable for any damages
+#  arising from the use of this software.
+# 
+#   Koji Suzuki   : suz@kt.rim.or.jp
+#
+# mouse operations
+# <left-button>           : select the pai    
+# <left-button + move>    : drag the pai
+# <middle-button>         : dupulicate the pai
+# <shift + middle-button> : delete the pai
+# <right-button>          : rotate the pai
+# <shift + right-button>  : rotate the pai (reverse)
+# <shift + left-button>   : print pai object
+#
+# converting to bitmap format 
+# 1. open pai window
+#     > wish -f pai.tk &
+# 2. dump window
+#     > xwd -out pai24.xwd -source 240x144+2+2 
+#     (select pai window)
+# 3. convert to gif,xpm,ppm,tiff format
+#     > xpaint pai24.xwd
+#     (select menu file -> save as)
+#        a) change file name
+#        b) change file format
+#
+# converting to cad,tgif format
+# 1. open pai window with logging stdout
+#     > wish -f pai.tk > log
+# 2. print pai object 
+#     <shift + left-button> on pai
+# 3. convert with awk or perl
+#
+# pai size definition
+set pai_size 16
+#set pai_size 24
+#set pai_size 32
+#set pai_size 48
+
+set pai_width [expr int($pai_size * 2/32)]
+
+for {set i 1} {$i < 10} {incr i} {
+for {set j 0} {$j < 4} {incr j} {
+	eval "set pai_name([expr $i*4+$j]) man$i"
+	eval "set pai_name([expr (9+$i)*4+$j]) pin$i"
+	eval "set pai_name([expr (18+$i)*4+$j]) sou$i"
+}
+}
+
+for {set j 0} {$j < 4} {incr j} {
+	eval "set pai_name([expr 28*4+$j]) ton"
+	eval "set pai_name([expr 29*4+$j]) nan"
+	eval "set pai_name([expr 30*4+$j]) sya"
+	eval "set pai_name([expr 31*4+$j]) pei"
+	eval "set pai_name([expr 32*4+$j]) haku"
+	eval "set pai_name([expr 33*4+$j]) hatu"
+	eval "set pai_name([expr 34*4+$j]) cyun"
+}
+
+eval "set pai_name([expr 5*4]) man5_red"
+eval "set pai_name([expr (5+9)*4]) pin5_red"
+eval "set pai_name([expr (5+18)*4]) sou5_red"
+
+set pai_name(0)	pai
+set pai_name(1)	pai
+set pai_name(2)	pai_rev
+set pai_name(3)	pai_rev
+
+proc dpos w {
+    global pai_size
+    eval "wm geometry $w [expr 24*$pai_size+4]x[expr 24*$pai_size+4]"
+}
+
+proc hand_locate {player pos} {
+	global locate_kind
+	set locate_kind  "hand-$player-$pos"
+	if {$player == 0} then {
+		set x [expr (5+$pos)*32]
+		set y [expr 22*32+16]
+	} elseif {$player == 1} then {
+		set y [expr (19-$pos)*32]
+		set x [expr 22*32+16]
+	} elseif {$player == 2} then {
+		set x [expr (19-$pos)*32]
+		set y [expr 2*32-16]
+	} elseif {$player == 3} then {
+		set y [expr (5+$pos)*32]
+		set x [expr 2*32-16]
+	}
+	set rot [expr $player*90]
+	pai_locate $x $y $rot
+}
+
+proc mt_locate {player pos flag} {
+	global pai_width
+	global locate_kind
+	set locate_kind "mt-$pos-$flag"
+
+	if {$player == 0} then {
+		set x [expr (2+$pos)*32-4]
+		set y [expr 20*32-4]
+	} elseif {$player == 1} then {
+		set y [expr (22-$pos)*32-4]
+		set x [expr 20*32-4]
+	} elseif {$player == 2} then {
+		set x [expr (22-$pos)*32-4]
+		set y [expr 4*32-4]
+	} elseif {$player == 3} then {
+		set y [expr (2+$pos)*32-4]
+		set x [expr 4*32-4]
+	}
+	if {$flag == 0} then {
+		set x [expr $x+8]
+		set y [expr $y+8]
+	}
+	set rot [expr $player*90]
+	pai_locate $x $y $rot
+}
+
+proc rv_locate {player pos} {
+	global locate_kind
+	set locate_kind "rv-$player-$pos"
+
+	set posx [expr $pos%6]
+	set posy [expr int($pos/6)]
+	if {$posy > 2} then {
+		set posx [expr $posx+6]
+		set posy 2
+	}
+
+	if {$player == 0} then {
+		set x [expr (9+$posx)*32]
+		set y [expr (15*32)+($posy*48)]
+	} elseif {$player == 1} then {
+		set y [expr (15-$posx)*32]
+		set x [expr (15*32)+($posy*48)]
+	} elseif {$player == 2} then {
+		set x [expr (15-$posx)*32]
+		set y [expr (9*32)-($posy*48)]
+	} elseif {$player == 3} then {
+		set y [expr (9+$posx)*32]
+		set x [expr (9*32)-($posy*48)]
+	}
+	set rot [expr $player*90]
+	pai_locate $x $y $rot
+}
+
+proc mark_locate {player} {
+	global locate_kind
+	set locate_kind "mark-$player"
+
+	if {$player == 0} then {
+		set x [expr (24*32)-48]
+		set y [expr (24*32)-48]
+	} elseif {$player == 1} then {
+		set x [expr (24*32)-48]
+		set y [expr 48]
+	} elseif {$player == 2} then {
+		set x [expr 48]
+		set y [expr 48]
+	} elseif {$player == 3} then {
+		set x [expr 48]
+		set y [expr (24*32)-48]
+	}
+	set rot [expr $player*90]
+	pai_locate $x $y $rot
+}
+
+proc center_locate {player} {
+	global locate_kind
+	set locate_kind "center-$player"
+
+	if {$player == 0} then {
+		set x [expr (10*32)]
+		set y [expr (10*32)]
+	} elseif {$player == 1} then {
+		set x [expr (10*32)]
+		set y [expr (14*32)]
+	} elseif {$player == 2} then {
+		set x [expr (14*32)]
+		set y [expr (14*32)]
+	} elseif {$player == 3} then {
+		set x [expr (14*32)]
+		set y [expr (10*32)]
+	}
+	set rot [expr $player*90]
+	pai_locate $x $y $rot
+}
+
+proc dai_locate {pos} {
+	global locate_kind
+	set locate_kind "dai-$pos"
+
+	set x [expr (11+$pos)*32]
+	set y [expr (11+$pos)*32+16]
+	set rot [expr $pos*45]
+	pai_locate $x $y $rot
+}
+
+
+proc coin_locate {player pos} {
+	global locate_kind
+	set locate_kind "coin-$player-$pos"
+
+	if {$player == 0} then {
+		set x [expr (24*32)-60-(10*$pos)]
+		set y [expr (24*32)-48]
+	} elseif {$player == 1} then {
+		set x [expr (24*32)-48]
+		set y [expr 60+(10*$pos)]
+	} elseif {$player == 2} then {
+		set x [expr 60+(10*$pos)]
+		set y [expr 48]
+	} elseif {$player == 3} then {
+		set x [expr 48]
+		set y [expr (24*32)-60-(10*$pos)]
+	}
+	set rot [expr $player*90]
+	pai_locate $x $y $rot
+}
+
+proc taku {} {
+    global pai_size pai_name
+    set window "."
+    set w ""
+    wm title . "pai"
+    wm iconname . "taku"
+    wm minsize . 100 100
+    dpos . 
+
+    set c $w.frame1.c
+
+    frame $w.frame1 -relief raised -bd 2
+
+    pack append $window $w.frame1 {top expand fill}
+
+    canvas $c -bg seagreen
+    pack append $w.frame1 $c {expand fill}
+
+    set cnt 4
+    for {set i 0} {$i <4} {incr i} {
+        for {set j 0} {$j <13} {incr j} {
+		hand_locate $i $j
+		eval "pai_draw $pai_name($cnt) $c"
+		incr cnt
+        }
+        for {set j 0} {$j <21} {incr j} {
+		rv_locate $i $j
+		eval "pai_draw $pai_name($cnt) $c"
+		incr cnt
+	}
+    }
+    for {set i 0} {$i <4} {incr i} {
+        for {set j 0} {$j <17} {incr j} {
+		mt_locate $i $j 0
+		pai_draw pai_rev_under $c
+        }
+    }
+    for {set i 0} {$i <4} {incr i} {
+        for {set j 0} {$j <17} {incr j} {
+		mt_locate $i $j 1
+		pai_draw pai_rev $c
+        }
+    }
+
+    mark_locate 0
+    pai_draw mark_ton $c
+    mark_locate 1
+    pai_draw mark_nan $c
+    mark_locate 2
+    pai_draw mark_ton $c
+    mark_locate 3
+    pai_draw mark_nan $c
+
+    center_locate 0
+    pai_draw center $c
+
+    coin_locate 0 0
+    pai_draw coin100 $c
+    coin_locate 0 1
+    pai_draw coin1000 $c
+    coin_locate 0 2
+    pai_draw coin5000 $c
+    coin_locate 0 3
+    pai_draw coin10000 $c
+
+    coin_locate 1 0
+    pai_draw coin100 $c
+    coin_locate 1 1
+    pai_draw coin100 $c
+    coin_locate 1 2
+    pai_draw coin1000 $c
+    coin_locate 1 3
+    pai_draw coin1000 $c
+
+    coin_locate 2 0
+    pai_draw coin100 $c
+    coin_locate 2 1
+    pai_draw coin1000 $c
+    coin_locate 2 2
+    pai_draw coin5000 $c
+    coin_locate 2 3
+    pai_draw coin10000 $c
+
+    coin_locate 3 0
+    pai_draw coin100 $c
+    coin_locate 3 1
+    pai_draw coin100 $c
+    coin_locate 3 2
+    pai_draw coin1000 $c
+    coin_locate 3 3
+    pai_draw coin1000 $c
+
+    dai_locate 0
+    pai_draw dai1 $c
+    dai_locate 1
+    pai_draw dai2 $c
+    pai_locate 100 100 0
+    pai_draw dai3 $c; pai_next
+    pai_draw dai4 $c; pai_next
+    pai_draw dai5 $c; pai_next
+    pai_draw dai6 $c; pai_next
+
+    bind $c <1>         "takuSelect $c %x %y"
+    bind $c <Shift-2>   "takuDelete $c %x %y"
+    bind $c <3>         "takuRot $c %x %y 45"
+    bind $c <Shift-3>   "takuRot $c %x %y -45"
+    bind $c <2>         "takuDup $c %x %y"
+    bind $c <B1-Motion> "takuDrag $c %x %y"
+    bind $c <Shift-1>   "takuPut $c %x %y"
+    bind $c <Control-1> "takuGet $c"
+}
+
+proc rot_set {r} {
+	global rot_xx rot_xy rot_yx rot_yy
+	set pi 3.141592653589793238462643383279
+	set rot_xx [expr sin($pi*($r+90)/180.0)]
+	set rot_xy [expr cos($pi*($r+90)/180.0) * -1.0]
+	set rot_yx [expr cos($pi*($r+90)/180.0)]
+	set rot_yy [expr sin($pi*($r+90)/180.0)]
+}
+
+proc pai_locate {x y r} {
+	global pai_x pai_y pai_r pai_item
+	set pai_x [expr int($x)]
+	set pai_y [expr int($y)]
+	set pai_r [expr int($r)]
+	rot_set $r
+}
+
+proc pai_next {} {
+	global pai_x pai_y pai_r
+        global pai_size 
+	global rot_xx rot_yx
+	set pai_x [expr int(($rot_xx*32)+$pai_x+0.5)]
+	set pai_y [expr int(($rot_yx*32)+$pai_y+0.5)]
+}
+
+proc pai_draw {name c} {
+	global pai_x pai_y pai_r pai_item
+	global locate_kind
+
+	set pai_item "{pai-$pai_x-$pai_y-$pai_r-$name $name $locate_kind}"
+	$name $c
+}
+
+proc mark {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 0] \
+		[convert 48 0] \
+		[convert 48 48] \
+		[convert 0 48] \
+		[convert 0 0] \
+		-fill red -tags $pai_item"
+        eval "$c create line \
+		[convert 0 0] \
+		[convert 48 0] \
+		[convert 48 48] \
+		[convert 0 48] \
+		[convert 0 0] \
+		-width 1 -fill white -tags $pai_item"
+        eval "$c create line \
+		[convert 2 2] \
+		[convert 46 2] \
+		[convert 46 46] \
+		[convert 2 46] \
+		[convert 2 2] \
+		-width 1 -fill white -tags $pai_item"
+}
+
+proc mark_ton {c} {
+	global pai_item pai_width
+        mark $c 
+	eval "$c create line \
+		[convert 18 13 ]\
+		[convert 30 13 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 18 17 ]\
+		[convert 18 25 ]\
+		[convert 30 25 ]\
+		[convert 30 17 ]\
+		[convert 18 17 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 18 21 ]\
+		[convert 30 21 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 24 9 ]\
+		[convert 24 36 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 24 25 ]\
+		[convert 16 36 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 24 25 ]\
+		[convert 32 36 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+}
+
+proc mark_nan {c} {
+	global pai_item pai_width
+        mark $c 
+	eval "$c create line \
+		[convert 18 18 ]\
+		[convert 30 18 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 24 14 ]\
+		[convert 24 22 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 15 36 ]\
+		[convert 15 22 ]\
+		[convert 33 22 ]\
+		[convert 33 36 ]\
+		[convert 31 36 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 24 28 ]\
+		[convert 24 35 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 20 32 ]\
+		[convert 28 32 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 21 28 ]\
+		[convert 29 28 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 20 24 ]\
+		[convert 22 26 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 28 24 ]\
+		[convert 26 26 ]\
+		 -width $pai_width -fill white  -cap round -tags $pai_item"
+}
+
+proc coin {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 2] \
+		[convert 0 46] \
+		[convert 2 48] \
+		[convert 6 48] \
+		[convert 8 46] \
+		[convert 8 2] \
+		[convert 6 0] \
+		[convert 2 0] \
+		[convert 0 2] \
+		-fill white -tags $pai_item"
+        eval "$c create line \
+		[convert 0 2] \
+		[convert 0 46] \
+		[convert 2 48] \
+		[convert 6 48] \
+		[convert 8 46] \
+		[convert 8 2] \
+		[convert 6 0] \
+		[convert 2 0] \
+		[convert 0 2] \
+		-width 1 -fill black -tags $pai_item"
+}
+
+proc coin100 {c} {
+	coin $c
+	pin_fill $c 2 18 1 black black
+	pin_fill $c 2 22 1 black black
+	pin_fill $c 2 26 1 black black
+	pin_fill $c 2 30 1 black black
+	pin_fill $c 5 18 1 black black
+	pin_fill $c 5 22 1 black black
+	pin_fill $c 5 26 1 black black
+	pin_fill $c 5 30 1 black black
+}
+
+proc coin1000 {c} {
+	coin $c
+	pin_fill $c 4 24 2 red red
+}
+
+proc coin5000 {c} {
+	coin $c
+	pin_fill $c 4 24 2 red red
+	pin_fill $c 2 26 1 red red
+	pin_fill $c 6 26 1 red red
+	pin_fill $c 2 22 1 red red
+	pin_fill $c 6 22 1 red red
+}
+
+proc coin10000 {c} {
+	coin $c
+	pin_fill $c 4 24 2 red red
+	pin_fill $c 2 26 1 red red
+	pin_fill $c 6 26 1 red red
+	pin_fill $c 2 22 1 red red
+	pin_fill $c 6 22 1 red red
+
+	pin_fill $c 3 28 1 red red
+	pin_fill $c 5 28 1 red red
+	pin_fill $c 4 30 1 red red
+	pin_fill $c 4 33 2 green3 green3
+
+	pin_fill $c 3 20 1 red red
+	pin_fill $c 5 20 1 red red
+	pin_fill $c 4 18 1 red red
+	pin_fill $c 4 15 2 green3 green3
+}
+
+proc dai1 {c} {
+	dai $c
+	pin_fill $c 12 12 4 red red
+}
+
+proc dai2 {c} {
+	dai $c
+	pin_fill $c 8 12 2 black black
+	pin_fill $c 16 12 2 black black
+}
+
+proc dai3 {c} {
+	dai $c
+	pin_fill $c 8 8 2 black black
+	pin_fill $c 12 12 2 black black
+	pin_fill $c 16 16 2 black black
+}
+
+proc dai4 {c} {
+	dai $c
+	pin_fill $c 8 8 2 black black
+	pin_fill $c 8 16 2 black black
+	pin_fill $c 16 8 2 black black
+	pin_fill $c 16 16 2 black black
+}
+
+proc dai5 {c} {
+	dai $c
+	pin_fill $c 8 8 2 black black
+	pin_fill $c 8 16 2 black black
+	pin_fill $c 12 12 2 black black
+	pin_fill $c 16 8 2 black black
+	pin_fill $c 16 16 2 black black
+}
+
+proc dai6 {c} {
+	dai $c
+	pin_fill $c 6 8 2 black black
+	pin_fill $c 6 16 2 black black
+	pin_fill $c 12 8 2 black black
+	pin_fill $c 12 16 2 black black
+	pin_fill $c 18 8 2 black black
+	pin_fill $c 18 16 2 black black
+}
+
+proc dai {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 0] \
+		[convert 24 0] \
+		[convert 24 24] \
+		[convert 0 24] \
+		[convert 0 0] \
+		-fill white -tags $pai_item"
+        eval "$c create line \
+		[convert 0 0] \
+		[convert 24 0] \
+		[convert 24 24] \
+		[convert 0 24] \
+		[convert 0 0] \
+		-width 1 -fill black -tags $pai_item"
+}
+
+proc center {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 0] \
+		[convert 128 0] \
+		[convert 128 128] \
+		[convert 0 128] \
+		[convert 0 0] \
+		-fill white -tags $pai_item"
+        eval "$c create line \
+		[convert 0 0] \
+		[convert 128 0] \
+		[convert 128 128] \
+		[convert 0 128] \
+		[convert 0 0] \
+		-width 1 -fill black -tags $pai_item"
+	pin_fill $c 64 64 40 black seagreen
+	pin_fill $c 12 64 6 black black
+	pin_fill $c 116 64 6 black black
+	pin_fill $c 64 12 6 black black
+	pin_fill $c 64 116 6 black red
+}
+
+proc pai {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 0] \
+		[convert 32 0] \
+		[convert 32 43] \
+		[convert 0 43] \
+		[convert 0 0] \
+		-fill white -tags $pai_item"
+        eval "$c create line \
+		[convert 0 0] \
+		[convert 32 0] \
+		[convert 32 43] \
+		[convert 0 43] \
+		[convert 0 0] \
+		-width 1 -fill black -tags $pai_item"
+}
+
+proc pai_rev {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 0] \
+		[convert 32 0] \
+		[convert 32 43] \
+		[convert 0 43] \
+		[convert 0 0] \
+		-fill blue -tags $pai_item"
+        eval "$c create line \
+		[convert 0 0] \
+		[convert 32 0] \
+		[convert 32 43] \
+		[convert 0 43] \
+		[convert 0 0] \
+		-width 1 -fill black -tags $pai_item"
+}
+
+proc pai_rev_under {c} {
+	global pai_item pai_width
+        eval "$c create polygon \
+		[convert 0 0] \
+		[convert 32 0] \
+		[convert 32 43] \
+		[convert 0 43] \
+		[convert 0 0] \
+		-fill MediumBlue -tags $pai_item"
+        eval "$c create line \
+		[convert 0 0] \
+		[convert 32 0] \
+		[convert 32 43] \
+		[convert 0 43] \
+		[convert 0 0] \
+		-width 1 -fill black -tags $pai_item"
+}
+
+proc haku {c} {
+        pai $c 
+}
+
+proc hatu {c} {
+	global pai_item pai_width
+        pai $c 
+	eval "$c create line \
+		[convert 11 14 ]\
+		[convert 16 12 ]\
+		[convert 11 19 ]\
+		[convert 6 25 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 7 15 ]\
+		[convert 9 18 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 14 ]\
+		[convert 24 26 ]\
+		[convert 27 28 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 21 10 ]\
+		[convert 18 16 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 23 16 ]\
+		[convert 19 21 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+
+	eval "$c create line \
+		[convert 17 21 ]\
+		[convert 14 27 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 24 ]\
+		[convert 22 24 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 14 28 ]\
+		[convert 22 28 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 18 24 ]\
+		[convert 18 30 ]\
+		[convert 14 34 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 21 31 ]\
+		[convert 24 34 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+
+	eval "$c create line \
+		[convert 14 28 ]\
+		[convert 6 30 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 10 23 ]\
+		[convert 14 22 ]\
+		[convert 10 26 ]\
+		[convert 12 26 ]\
+		[convert 13 32 ]\
+		[convert 10 34 ]\
+		[convert 8 32 ]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+
+}
+
+proc cyun {c} {
+	global pai_item pai_width
+        pai $c 
+	eval "$c create line \
+		[convert 7 16 ]\
+		[convert 12 24 ]\
+		[convert 21 24 ]\
+		[convert 26 17 ]\
+		[convert 23 15 ]\
+		[convert 8 18 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 8 ]\
+		[convert 16 34 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+}
+
+proc ton {c} {
+	global pai_item pai_width
+        pai $c 
+	eval "$c create line \
+		[convert 12 12 ]\
+		[convert 20 10 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 9 16 ]\
+		[convert 12 23 ]\
+		[convert 20 22 ]\
+		[convert 23 16 ]\
+		[convert 21 14 ]\
+		[convert 9 16 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 11 19 ]\
+		[convert 21 18 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 7 ]\
+		[convert 16 34 ]\
+		[convert 15 31 ]\
+		[convert 12 28 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 15 23 ]\
+		[convert 10 28 ]\
+		[convert 6 30 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 23 ]\
+		[convert 22 30 ]\
+		[convert 27 32 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc nan {c} {
+	global pai_item pai_width
+        pai $c 
+	eval "$c create line \
+		[convert 12 16 ]\
+		[convert 20 14 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 17 10 ]\
+		[convert 16 20 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 8 22 ]\
+		[convert 10 32 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 8 23 ]\
+		[convert 23 18 ]\
+		[convert 27 22 ]\
+		[convert 24 34 ]\
+		[convert 21 32 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 26 ]\
+		[convert 16 33 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 12 30 ]\
+		[convert 20 29 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 13 26 ]\
+		[convert 21 25 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 12 19 ]\
+		[convert 14 24 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 22 17 ]\
+		[convert 19 22 ]\
+		[convert 17 24 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc sya {c} {
+	global pai_item pai_width
+        pai $c 
+	eval "$c create line \
+		[convert 8 17 ]\
+		[convert 26 15 ]\
+		[convert 20 16 ]\
+		[convert 13 22 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 13 20 ]\
+		[convert 14 34 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 19 20 ]\
+		[convert 18 22 ]\
+		[convert 18 34 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 7 22 ]\
+		[convert 11 34 ]\
+		[convert 22 33 ]\
+		[convert 26 25 ]\
+		[convert 23 22 ]\
+		[convert 8 25 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc pei {c} {
+	global pai_item pai_width
+        pai $c 
+	eval "$c create line \
+		[convert 13 17 ]\
+		[convert 13 28 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 6 20 ]\
+		[convert 11 22 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 8 24 ]\
+		[convert 6 32 ]\
+		[convert 15 24 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 24 18 ]\
+		[convert 18 23 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 18 15 ]\
+		[convert 18 31 ]\
+		[convert 20 33 ]\
+		[convert 27 31 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc pin1 {c} {
+        pai $c 
+	pin $c  16 22 10 black
+	pin $c  16 22  7 red2
+	pin $c  16 22  4 black
+}
+
+proc pin2 {c} {
+        pai $c 
+
+	pin $c  16 14 7 black
+	pin $c  16 14 4 black
+	pin $c  16 30 7 black
+	pin $c  16 30 4 black
+}
+
+proc pin3 {c} {
+        pai $c 
+	pin $c  11 11 5 black
+	pin $c  11 11 2 black
+	pin $c  16 22 5 black
+	pin $c  16 22 2 red
+	pin $c  21 33 5 black
+	pin $c  21 33 2 black
+}
+
+proc pin4 {c} {
+        pai $c 
+	pin $c  11 13 5 black
+	pin $c  11 13 2 black
+	pin $c  21 13 5 black
+	pin $c  21 13 2 black
+	pin $c  11 31 5 black
+	pin $c  11 31 2 black
+	pin $c  21 31 5 black
+	pin $c  21 31 2 black
+}
+
+proc pin5 {c} {
+        pai $c 
+	pin $c  11 13 5 black
+	pin $c  11 13 2 black
+	pin $c  21 13 5 black
+	pin $c  21 13 2 black
+	pin $c  11 31 5 black
+	pin $c  11 31 2 black
+	pin $c  21 31 5 black
+	pin $c  21 31 2 black
+	pin $c  16 22 5 black
+	pin $c  16 22 2 red2
+}
+
+proc pin5_red {c} {
+        pai $c 
+	pin $c  11 13 5 red2
+	pin $c  11 13 2 red2
+	pin $c  21 13 5 red2
+	pin $c  21 13 2 red2
+	pin $c  11 31 5 red2
+	pin $c  11 31 2 red2
+	pin $c  21 31 5 red2
+	pin $c  21 31 2 red2
+	pin $c  16 22 5 red2
+	pin $c  16 22 2 red2
+}
+
+proc pin6 {c} {
+        pai $c 
+
+        pin $c  11 11 5 black
+        pin $c  11 11 2 black
+        pin $c  21 11 5 black
+        pin $c  21 11 2 black
+        pin $c  11 24 5 red2
+        pin $c  11 24 2 red2
+        pin $c  21 24 5 red2
+        pin $c  21 24 2 red2
+        pin $c  11 33 5 red2
+        pin $c  11 33 2 red2
+        pin $c  21 33 5 red2
+        pin $c  21 33 2 red2
+}
+
+proc pin7 {c} {
+        pai $c 
+
+        pin $c   8  9 5 black
+        pin $c   8  9 2 black
+        pin $c  16 12 5 black
+        pin $c  16 12 2 black
+        pin $c  24 15 5 black
+        pin $c  24 15 2 black
+        pin $c  11 25 5 red2
+        pin $c  11 25 2 red2
+        pin $c  21 25 5 red2
+        pin $c  21 25 2 red2
+        pin $c  11 34 5 red2
+        pin $c  11 34 2 red2
+        pin $c  21 34 5 red2
+        pin $c  21 34 2 red2
+}
+
+proc pin8 {c} {
+        pai $c 
+
+        pin $c  12 10 4 black
+        pin $c  12 10 1 black
+        pin $c  20 10 4 black
+        pin $c  20 10 1 black
+        pin $c  12 18 4 black
+        pin $c  12 18 1 black
+        pin $c  20 18 4 black
+        pin $c  20 18 1 black
+        pin $c  12 26 4 black
+        pin $c  12 26 1 black
+        pin $c  20 26 4 black
+        pin $c  20 26 1 black
+        pin $c  12 34 4 black
+        pin $c  12 34 1 black
+        pin $c  20 34 4 black
+        pin $c  20 34 1 black
+}
+
+proc pin9 {c} {
+        pai $c 
+        pin $c   8 11 4 black
+        pin $c   8 11 1 black
+        pin $c  16 11 4 black
+        pin $c  16 11 1 black
+        pin $c  24 11 4 black
+        pin $c  24 11 1 black
+        pin $c   8 22 4 black
+        pin $c   8 22 1 red2
+        pin $c  16 22 4 black
+        pin $c  16 22 1 red2
+        pin $c  24 22 4 black
+        pin $c  24 22 1 red2
+        pin $c   8 33 4 black
+        pin $c   8 33 1 black
+        pin $c  16 33 4 black
+        pin $c  16 33 1 black
+        pin $c  24 33 4 black
+        pin $c  24 33 1 black
+}
+
+
+proc pin_fill {c  cx cy cr col col2} {
+	global pai_item pai_width
+	set tmp_x [convert_x $cx $cy]
+	set tmp_y [convert_y $cx $cy]
+	set tmp_r [convert_size $cr]
+
+	eval "$c create oval \
+		[expr $tmp_x-$tmp_r] [expr $tmp_y-$tmp_r] \
+		[expr $tmp_x+$tmp_r] [expr $tmp_y+$tmp_r] \
+		 -width $pai_width -outline $col -fill $col2 -tags $pai_item"
+}
+
+proc pin {c  cx cy cr col} {
+	global pai_item pai_width
+	set tmp_x [convert_x $cx $cy]
+	set tmp_y [convert_y $cx $cy]
+	set tmp_r [convert_size $cr]
+
+	eval "$c create oval \
+		[expr $tmp_x-$tmp_r] [expr $tmp_y-$tmp_r] \
+		[expr $tmp_x+$tmp_r] [expr $tmp_y+$tmp_r] \
+		 -width $pai_width -outline $col -tags $pai_item"
+}
+
+
+proc man1 {c} {
+	global pai_item pai_width
+        pai $c 
+	man $c 
+	eval "$c create line \
+		[convert 8 12 ]\
+		[convert 12 12 ]\
+		[convert 20 11 ]\
+		[convert 23 12 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man2 {c} {
+	global pai_item pai_width
+        pai $c 
+	man $c 
+	eval "$c create line \
+		[convert 12 10 ]\
+		[convert 20 8 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 9 16 ]\
+		[convert 13 16 ]\
+		[convert 21 14 ]\
+		[convert 24 15 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man3 {c} {
+	global pai_item pai_width
+        pai $c 
+	man $c 
+	eval "$c create line \
+		[convert 11  8 ]\
+		[convert 22  7 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 12 12 ]\
+		[convert 20 11 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 9 16 ]\
+		[convert 13 16 ]\
+		[convert 21 15 ]\
+		[convert 24 16 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man4 {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+	eval "$c create line \
+		[convert 9 10 ]\
+		[convert 22 8 ]\
+		[convert 24 10 ]\
+		[convert 22 15 ]\
+		[convert 11 16 ]\
+		[convert 9 10 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 14 10 ]\
+		[convert 14 14 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 18 10 ]\
+		[convert 18 14 ]\
+		 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man5 {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+        eval "$c create line \
+                [convert 13  8 ]\
+                [convert 22  7 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 14 13 ]\
+                [convert 22 11 ]\
+                [convert 21 16 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 18 9 ]\
+                [convert 16 16 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 13 17 ]\
+                [convert 15 17 ]\
+                [convert 24 16 ]\
+                [convert 26 17 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 11 11 ]\
+                [convert 11 17 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 14 8 ]\
+                [convert 8 16 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man5_red {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+        eval "$c create line \
+                [convert 13  8 ]\
+                [convert 22  7 ]\
+                 -width $pai_width -fill red2  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 14 13 ]\
+                [convert 22 11 ]\
+                [convert 21 16 ]\
+                 -width $pai_width -fill red2  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 18 9 ]\
+                [convert 16 16 ]\
+                 -width $pai_width -fill red2  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 13 17 ]\
+                [convert 15 17 ]\
+                [convert 24 16 ]\
+                [convert 26 17 ]\
+                 -width $pai_width -fill red2  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 11 11 ]\
+                [convert 11 17 ]\
+                 -width $pai_width -fill red2  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 14 8 ]\
+                [convert 8 16 ]\
+                 -width $pai_width -fill red2  -cap round -tags $pai_item"
+}
+
+proc man6 {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+        eval "$c create line \
+                [convert 15 7 ]\
+                [convert 17 9 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 8 10 ]\
+                [convert 10 10 ]\
+                [convert 22 8 ]\
+                [convert 24 10 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 13 13 ]\
+                [convert 10 16 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 19 13 ]\
+                [convert 22 16 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man7 {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+        eval "$c create line \
+                [convert 8 13 ]\
+                [convert 21 9 ]\
+                [convert 24 9 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 14 7 ]\
+                [convert 14 15 ]\
+                [convert 16 17 ]\
+                [convert 22 15 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man8 {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+        eval "$c create line \
+                [convert 13 12 ]\
+                [convert 9 15 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 14 8 ]\
+                [convert 17 8 ]\
+                [convert 21 15 ]\
+                [convert 25 15 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man9 {c} {
+	global pai_item pai_width
+        pai $c 
+        man $c 
+        eval "$c create line \
+                [convert 14 7 ]\
+                [convert 12 14 ]\
+                [convert 8 16 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 9 10 ]\
+                [convert 20 9 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+        eval "$c create line \
+                [convert 18 9 ]\
+                [convert 16 16 ]\
+                [convert 17 17 ]\
+                [convert 25 17 ]\
+                [convert 24 17 ]\
+                [convert 24 13 ]\
+                 -width $pai_width -fill black  -cap round -tags $pai_item"
+}
+
+proc man {c} {
+	global pai_item pai_width
+	eval "$c create line \
+		[convert 13 20 ]\
+		[convert 14 24 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 19 20 ]\
+		[convert 18 24 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 11 24 ]\
+		[convert 21 23 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+
+	eval "$c create line \
+		[convert 13 27 ]\
+		[convert 19 26 ]\
+		[convert 19 30 ]\
+		[convert 13 31 ]\
+		[convert 13 27 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 13 29 ]\
+		[convert 19 28 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 16 26 ]\
+		[convert 15 36 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 13 36 ]\
+		[convert 19 34 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 18 34 ]\
+		[convert 21 38 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 10 36 ]\
+		[convert 9 32 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 9 34 ]\
+		[convert 24 30 ]\
+		[convert 26 32 ]\
+		[convert 23 39 ]\
+		[convert 21 38 ]\
+		 -width $pai_width -fill red2  -cap round -tags $pai_item"
+}
+
+proc sou1 {c} {
+	global pai_item pai_width
+	pai $c 
+	pin $c  16 26 8 green4
+
+	eval "$c create line \
+		[convert 25 22  ]\
+		[convert 25 10  ]\
+		 -width $pai_width -fill green4 -tags $pai_item"
+	eval "$c create line \
+		[convert 22 22  ]\
+		[convert 22 10  ]\
+		 -width $pai_width -fill red2 -tags $pai_item"
+	eval "$c create line \
+		[convert 19 22  ]\
+		[convert 19 10  ]\
+		 -width $pai_width -fill green4 -tags $pai_item"
+	eval "$c create line \
+		[convert 14 26  ]\
+		[convert 8 36  ]\
+		[convert 16 32  ]\
+		 -width $pai_width -fill green4 -tags $pai_item"
+}
+
+proc sou2 {c} {
+        pai $c 
+	sou $c  17 15 5 green4
+	sou $c  17 29 5 green4
+}
+
+proc sou3 {c} {
+        pai $c 
+	sou $c  17 15 5 green4
+	sou $c  10 29 5 green4
+	sou $c  22 29 5 green4
+}
+
+proc sou4 {c} {
+        pai $c 
+	sou $c  10 15 5 green4
+	sou $c  22 15 5 green4
+	sou $c  10 29 5 green4
+	sou $c  22 29 5 green4
+}
+
+
+proc sou5 {c} {
+        pai $c 
+	sou $c  9 15 5 green4
+	sou $c  25 15 5 green4
+	sou $c  9 29 5 green4
+	sou $c  25 29 5 green4
+	sou $c  17 22 5 red2
+}
+
+proc sou5_red {c} {
+        pai $c 
+	sou $c  9 15 5 red2
+	sou $c  25 15 5 red2
+	sou $c  9 29 5 red2
+	sou $c  25 29 5 red2
+	sou $c  17 22 5 red2
+}
+
+proc sou6 {c} {
+        pai $c 
+
+	sou $c  9  15 5 green4
+	sou $c  17 15 5 green4
+	sou $c  25 15 5 green4
+	sou $c  9  29 5 green4
+	sou $c  17 29 5 green4
+	sou $c  25 29 5 green4
+}
+
+proc sou7 {c} {
+        pai $c 
+
+	sou $c  17 11 3 red2
+	sou $c  9  22 3 green4
+	sou $c  17 22 3 green4
+	sou $c  25 22 3 green4
+	sou $c  9  34 3 green4
+	sou $c  17 34 3 green4
+	sou $c  25 34 3 green4
+
+}
+
+proc sou8 {c} {
+	global pai_item pai_width
+        pai $c 
+	sou $c 8 13 5 green4
+	sou $c 24 13 5 green4
+	sou $c 8 31 5 green4
+	sou $c 24 31 5 green4
+	eval "$c create line \
+		[convert 11 18]\
+		[convert 16 13]\
+		[convert 20 18]\
+		 -width $pai_width -fill green4 -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 10 15]\
+		[convert 16 9]\
+		[convert 22 15]\
+		 -width $pai_width -fill green4 -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 11 26]\
+		[convert 16 31]\
+		[convert 20 26]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert 10 29]\
+		[convert 16 35]\
+		[convert 22 29]\
+		 -width $pai_width -fill green4  -cap round -tags $pai_item"
+}
+
+proc sou9 {c} {
+        pai $c 
+
+	sou $c 9  10 3 green4
+	sou $c 17 10 3 red2
+	sou $c 25 10 3 green4
+	sou $c 9  22 3 green4
+	sou $c 17 22 3 red2
+	sou $c 25 22 3 green4
+	sou $c  9 34 3 green4
+	sou $c 17 34 3 red2
+	sou $c 25 34 3 green4
+}
+
+proc sou {c cx cy cr col} {
+	global pai_item pai_width
+	eval "$c create line \
+		[convert [expr $cx-3] [expr $cy-$cr]]\
+		[convert [expr $cx-2] [expr $cy-$cr]]\
+		[convert [expr $cx-2] [expr $cy+$cr]]\
+		[convert [expr $cx-3] [expr $cy+$cr]]\
+		 -width $pai_width -fill $col  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert [expr $cx+2] [expr $cy-$cr]]\
+		[convert [expr $cx+1] [expr $cy-$cr]]\
+		[convert [expr $cx+1] [expr $cy+$cr]]\
+		[convert [expr $cx+2] [expr $cy+$cr]]\
+		 -width $pai_width -fill $col  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert [expr $cx-3] [expr $cy-$cr]]\
+		[convert [expr $cx+2] [expr $cy-$cr]]\
+		 -width $pai_width -fill $col  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert [expr $cx-3] [expr $cy+$cr]]\
+		[convert [expr $cx+2] [expr $cy+$cr]]\
+		 -width $pai_width -fill $col  -cap round -tags $pai_item"
+	eval "$c create line \
+		[convert [expr $cx-3] [expr $cy]]\
+		[convert [expr $cx+2] [expr $cy]]\
+		 -width $pai_width -fill $col  -cap round -tags $pai_item"
+}
+
+proc convert_size {x} {
+        global pai_size
+return "[expr $x*$pai_size/32.0]"
+}
+
+proc convert_x {x y} {
+	global rot_xx rot_xy rot_yx rot_yy
+	global pai_x pai_y pai_r
+        global pai_size
+	set xx [expr ( $rot_xx * $x) + ($rot_xy * $y) ]
+return "[expr int(($pai_x+$xx)*$pai_size/32)]"
+}
+
+proc convert_y {x y} {
+	global rot_xx rot_xy rot_yx rot_yy
+	global pai_x pai_y pai_r
+        global pai_size
+	set yy [expr ( $rot_yx * $x) + ($rot_yy * $y) ]
+return "[expr int(($pai_y+$yy)*$pai_size/32 +0.5)]"
+}
+
+proc convert {x y} {
+	global rot_xx rot_xy rot_yx rot_yy
+	global pai_x pai_y pai_r
+        global pai_size
+	set xx [expr ( $rot_xx * $x) + ($rot_xy * $y) ]
+	set yy [expr ( $rot_yx * $x) + ($rot_yy * $y) ]
+return "[expr int(($pai_x+$xx)*$pai_size/32 +0.5)] [expr int(($pai_y+$yy)*$pai_size/32 +0.5)]"
+}
+
+proc rconvert {x y} {
+    global pai_size
+    return "[expr $x*32/$pai_size] [expr $y*32/$pai_size]"
+}
+
+set lastX 0
+set lastY 0
+set selection ""
+
+proc takuPut {c x y} {
+    set a [lindex [$c gettags current] 0]
+    set selection [$c find withtag $a]
+
+    puts stdout "$a"
+    puts stdout "{"
+    foreach i "$selection" {
+        set type [$c type $i]
+        set coords [$c coords $i]
+	if {$type == "line"} then {
+            set opt1 [$c itemconfig $i -fill]
+            set opt2 [$c itemconfig $i -width]
+            set opt3 [$c itemconfig $i -cap]
+	    scan $opt1 "%s %s %s %s %s" p1 p2 p3 p4 p5
+	    scan $opt2 "%s %s %s %s %s" q1 q2 q3 q4 q5
+	    scan $opt3 "%s %s %s %s %s" r1 r2 r3 r4 r5
+	    set opt "$p1 $p5 $q1 $q5 $r1 $r5"
+	} elseif {$type == "oval"} then {
+            set opt1 [$c itemconfig $i -outline]
+            set opt2 [$c itemconfig $i -width]
+	    scan $opt1 "%s %s %s %s %s" p1 p2 p3 p4 p5
+	    scan $opt2 "%s %s %s %s %s" q1 q2 q3 q4 q5
+	    set opt "$p1 $p5 $q1 $q5"
+	} elseif {$type == "polygon"} then {
+            set opt1 [$c itemconfig $i -fill]
+	    scan $opt1 "%s %s %s %s %s" p1 p2 p3 p4 p5
+	    set opt "$p1 $p5"
+	}
+	puts stdout "$type $coords $opt"
+    }
+   puts stdout "}"
+   flush stdout
+}
+
+proc takuGet {c} {
+    gets stdin tag
+    gets stdin obj
+    while {$obj != "\{"} {
+	 gets stdin obj
+    }
+    while {$obj == "\{"} {
+          gets stdin obj
+    }
+    while {$obj != "\}"} {
+        eval "$c create $obj -tags $tag"
+        gets stdin obj
+    }
+}
+
+proc takuSelect {c x y} {
+    global lastX lastY selection
+
+    set lastX [$c canvasx $x]
+    set lastY [$c canvasy $y]
+
+    set a [lindex [$c gettags current] 0]
+    set selection [$c find withtag $a]
+
+    foreach i "$selection" {
+         $c raise $i 
+    }
+}
+
+proc takuDelete {c x y} {
+    global selection
+
+    set a [lindex [$c gettags current] 0]
+    set selection [$c find withtag $a]
+
+    foreach i "$selection" {
+        $c delete $i
+    }
+
+    set selection ""
+}
+
+proc takuDup {c x y} {
+    global selection
+
+    set a [lindex [$c gettags current] 0]
+    set selection [$c find withtag $a]
+
+    set xx 0
+    set yy 0
+    set rr 0
+    set name ""
+    scan $a "pai-%d-%d-%d-%s" xx yy rr name
+
+    eval "pai_locate [rconvert [expr $x+4] [expr $y+4]] $rr"
+    pai_draw $name $c
+
+    set selection ""
+}
+
+proc takuRot {c x y r} {
+    global selection
+
+    set a [lindex [$c gettags current] 0]
+    set selection [$c find withtag $a]
+
+    set xx 0
+    set yy 0
+    set rr 0
+    set name ""
+    scan $a "pai-%d-%d-%d-%s" xx yy rr name
+    foreach i "$selection" {
+        $c delete $i
+    }
+
+    set rr [expr ($rr+$r)%360]
+    eval "pai_locate [rconvert $x $y] $rr"
+    pai_draw $name $c
+
+    set selection ""
+}
+
+proc takuDrag {c x y} {
+    global lastX lastY selection
+
+    set xx [$c canvasx $x]
+    set yy [$c canvasy $y]
+
+    foreach i "$selection" {
+         $c move $i [expr $xx-$lastX] [expr $yy-$lastY]
+    }
+    set lastX $x
+    set lastY $y
+}
+
+puts stdout "# <left-button>           : select the pai"    
+puts stdout "# <left-button + move>    : drag the pai"
+puts stdout "# <middle-button>         : dupulicate the pai"
+puts stdout "# <shift + middle-button> : delete the pai"
+puts stdout "# <right-button>          : rotate the pai"
+puts stdout "# <shift + right-button>  : rotate the pai (reverse)"
+puts stdout "# <shift + left-button>   : print pai object"
+flush stdout
+taku

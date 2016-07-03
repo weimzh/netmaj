@@ -1,0 +1,21 @@
+/* XPM */
+static char * ch2_xpm[] = {
+"48 14 4 1",
+" 	s None	c None ",
+".	c red          ",
+"w  c white        ",
+"a  c hotpink      ",
+"                                                ",
+"           wa                                   ",
+"         wwwaaa                                 ",
+"       wwwwwaaaaa                               ",
+"     wwwwwwwaaaaaaa                             ",
+"   wwwwwwwwwaaaaaaaaa     wwwwwwwwwwaaaaaaaaa   ",
+"wwwwwwwwwwwwaaaaaaaaaaaa wwwwwwwwwwwaaaaaaaaaaa ",
+"aaaaaaaaaaaa............ aaaaaaaaaaawwwwwwwwwww ",
+"   aaaaaaaaa.........     aaaaaaaaaawwwwwwwwww  ",
+"     aaaaaaa.......                             ",
+"       aaaaa.....                               ",
+"         aaa...                                 ",
+"           a.                                   ",
+"                                                "};

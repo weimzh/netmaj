@@ -1,0 +1,34 @@
+/* XPM */
+static char *bigsya_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+"# c #808080",
+". c #dddddd",
+"a s None c None",
+/* pixels */
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aa......................",
+"a.......................",
+"a....####.##.##########a",
+"aaaaaaaaa.#a.##aaaaaaaaa",
+"aaaaaaaaa.#a.##aaaaaaaaa",
+"aaaaaa...............#aa",
+"aa.....a..#a.#aaaaa...#a",
+"aa.#aaaa..#a.#aaaaaa...#",
+"aa.#aaaa..#a..#aaaaa...#",
+"aa.#aaa..#aa..#aaaaa..#a",
+"aa..#aa..aaa..#aaaaa..#a",
+"aa..#a..#aaa..........#a",
+"aa..#...aaaaa......#..#a",
+"aaa.#..#aaaaaa#...aa..#a",
+"aaa.#aaaaaaaaaa###aa..#a",
+"aaa.#aaaaaaaaaaaaaa...#a",
+"aaa.#aaaaaaaaaaaaaa...#a",
+"aaa...................#a",
+"aaa...................#a",
+"aaa..................#aa",
+"aaa..################aaa"
+};

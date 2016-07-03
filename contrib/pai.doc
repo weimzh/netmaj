@@ -1,0 +1,48 @@
+
+1. FILES
+
+    pai.tk
+        tcl/tk の wish 用のスクリプトです。
+        wish さえインストールされていれば、動くと思います。
+
+        ゲームデザイン用の補助ツールで、
+        牌の表示だけではなく、次のようなことができます。
+
+	    <left-button>           : 牌をセレクトする。
+            <left-button + move>    : 牌を動かす。
+            <middle-button>         : 新しい牌を作る。
+            <shift + middle-button> : 牌を消す。
+            <right-button>          : 牌を 45度回転する。
+            <shift + left-button>   : 牌のオブジェクトを標準出力に出す。
+
+       ちょっとしたノウハウ
+
+	   牌の大きさを変えるには
+	       pai.tk を編集して、pai_size という変数を変更する。
+
+	   牌をビットマップファイルに変換するには
+	       1. wish で 牌を表示する。
+	       2. xwd で ウインドウイメージをファイルにする。
+	       3. xpaint で読み込み、gif等のフォーマットに変換する。
+
+	   牌を図形に変換するには
+	       1. wish で 牌を表示する。(リダイレクトでstdout のログをとる)
+	       2. <Shift + left-button> で オブジェクトを書き出す。
+	       3. stdout を なんとかして、tgif の obj 形式に変換する。
+
+   taku.tk
+
+        pai.tk と ほぼ同じですが、麻雀卓のデザインになってます。
+
+
+2. COPYING
+
+    このプログラム、デザインについては、Gnu Public Licence に従うかぎり、
+    配布/改造等は自由とします。
+
+
+--
+	鈴木 康司＠ＮＥＣ 
+	suz@d2.bs1.fc.nec.co.jp
+
+

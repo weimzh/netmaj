@@ -1,0 +1,42 @@
+/* XPM */
+static char *bignan_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+". c #dddddd",
+"# c #808080",
+"a s None c None",
+/* pixels */
+"aaaaaaaaaaa.aaaaaaaaaaaa",
+"aaaaaaaaaaa.#aaaaaaaaaaa",
+"aaaaaaaaaaa.#aaaaaaaaaaa",
+"aaaaaaaaaaa.#aaaaaaaaaaa",
+"aaaaaaaaaaa.#aaaaaaaaaaa",
+"aaaaa...................",
+"....#######.############",
+"a###aaaaaaa.#aaaaaaaaaaa",
+"aaaaa..............aaaaa",
+"aaa.................#aaa",
+"aaa...aaaaaaaaaaaa...#aa",
+"aaa..#aa.aaaa...#aa..#aa",
+"aaa..#aa...#a.##aaa...aa",
+"aaa..#aaa..#..#aaaaa..#a",
+"aaa..#............aa..#a",
+"aaa..#............aa..#a",
+"aaa..#a####.######aa..#a",
+"aaa..#aaaaa.#aaaaaaa..#a",
+"aa..#a............#a..#a",
+"aa..#a#####.######a...#a",
+"a...#aaaaaa.#aaaaaa..##a",
+"a..#aaaaaaa.#aaaaaa..#aa",
+"...aaaaaaa..#aaaaa...#aa",
+"..#aaaaaaa..aaaaaa...#aa"
+};
+
+
+
+
+
+
+
+

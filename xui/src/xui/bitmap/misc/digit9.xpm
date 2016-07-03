@@ -1,0 +1,34 @@
+/* XPM */
+static char *digit9_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+"# c #808080",
+". c #dddddd",
+"a s None c None",
+/* pixels */
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaa...#aaaaaaaaaaaa",
+"aaaaaaaa...#aaaaaaaaaaaa",
+"aaaaaaaa...#aaaaaaaaaaaa",
+"aaaaaaaa...#aaaaaaaaaaaa",
+"aaaaaaaa...#aaaaaaaaaaaa",
+"aaaaaaaa..aa.....aaaaaaa",
+"aaaaaa...........aaaaaaa",
+"aa..........##...aaaaaaa",
+"aa....##..##aa...aaaaaaa",
+"aaa###aa..#aaa..#aaaaaaa",
+"aaaaaaaa..#aaa..#aaaaaaa",
+"aaaaaaa..#aaaa..#aaaaaaa",
+"aaaaaaa..#aaaa..#aaaaaaa",
+"aaaaaaa..#aaaa..#aaaaaaa",
+"aaaaaa..#aaaaa..#aaaaaaa",
+"aaaaaa..#aaaaa..#aaaaaaa",
+"aaaaaa.#aaaaaa..#aaaaaaa",
+"aaaa..#aaaaaaa..#aaaaaaa",
+"aaa...aaaaaaaa...aaaaaaa",
+"a.....aaaaaaaaa...aaaaaa",
+".....#aaaaaaaaa.........",
+"...##aaaaaaaaaaa........",
+"a.#aaaaaaaaaaaaaaa.....#"
+};

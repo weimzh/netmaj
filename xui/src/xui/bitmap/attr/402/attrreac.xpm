@@ -1,0 +1,12 @@
+/* XPM */
+static char * attrreach_xpm[] = {
+"40 2 6 1",
+" 	s None	c None ",
+"w	c white        ",
+".	c red          ",
+"g	c gray         ",
+"l	c LightGray    ",
+"x	c GhostWhite   ",
+"wwwwwwwwwwwwwwwwww....wwwwwwwwwwwwwwxllg",
+" lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxllllgg "};
+

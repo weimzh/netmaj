@@ -1,0 +1,29 @@
+/* XPM */
+static char * adigit4_xpm [] = {
+"12 18 5 1",
+"b	c black",
+"w	c white",
+"g	c gray ",
+"c	c DarkSeaGreen",
+" 	s None	c None",
+"      ccc    ",
+"     ccc     ",
+"   cccc   ccc",
+"   ccc    ccc",
+"  gccc   gccc",
+"  cccg   cccg",
+" gccc    ccc ",
+" ccc    gccg ",
+" cccccccccc  ",
+"cccccccccc   ",
+"cccccccccc   ",
+"      gccc   ",
+"      ccc    ",
+"     gccc    ",
+"     ccc     ",
+"    cccc     ",
+"    ccc      ",
+"   ccc       "};
+
+
+

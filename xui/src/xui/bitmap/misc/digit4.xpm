@@ -1,0 +1,34 @@
+/* XPM */
+static char *digit4_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    24    24        3            1",
+/* colors */
+"# c #808080",
+". c #dddddd",
+"a s None c None",
+/* pixels */
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa",
+"aa.....................a",
+"a...#####..#..#######...",
+"a..#aaaaa..#..#aaaaaaa..",
+"a..#aaaaa..#..#aaaaaa...",
+"a..#aaaaa.#a..#aaaaaa..#",
+"a..#aaaa..#a..#aaaaaa..#",
+"aa..#aaa..#a..#aaaaaa..#",
+"aa..#aa..#aa..#aaaaaa..#",
+"aa..#a...#aa........#..#",
+"aa..#...#aaaa.......#..#",
+"aa..#..#aaaaaa#######..#",
+"aa..#aaaaaaaaaaaaaaa..#a",
+"aa..#aaaaaaaaaaaaaaa..#a",
+"aaa..#aaaaaaaaaaaaaa..#a",
+"aaa..#aaaaaaaaaaaaaa..#a",
+"aaa...................#a",
+"aaa...############...#aa",
+"aaaa##aaaaaaaaaaaa###aaa",
+"aaaaaaaaaaaaaaaaaaaaaaaa"
+};

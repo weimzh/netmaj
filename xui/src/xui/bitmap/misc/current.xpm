@@ -1,0 +1,22 @@
+/* XPM */
+static char * current_xpm[] = {
+"24 14 4 1",
+" 	s None	c None ",
+".	c tomato3      ",
+"w  c white        ",
+"a  c red          ",
+"                        ",
+"           wa           ",
+"         wwwaaa         ",
+"       wwwwwaaaaa       ",
+"     wwwwwwwaaaaaaa     ",
+"   wwwwwwwwwaaaaaaaaa   ",
+"wwwwwwwwwwwwaaaaaaaaaaaa",
+"aaaaaaaaaaaa............",
+"   aaaaaaaaa.........   ",
+"     aaaaaaa.......     ",
+"       aaaaa.....       ",
+"         aaa...         ",
+"           a.           ",
+"                        "};
+

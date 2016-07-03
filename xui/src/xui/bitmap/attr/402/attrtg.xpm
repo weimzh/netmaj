@@ -1,0 +1,9 @@
+/* XPM */
+static char * attrtg_xpm[] = {
+"40 2 4 1",
+" 	s None	c None ",
+"w  c white        ",
+".  c Red          ",
+"b  c Black        ",
+"...............bbb..                    ",
+"...............bbb..                    "};

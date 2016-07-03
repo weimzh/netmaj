@@ -1,0 +1,20 @@
+# netmaj personal file
+
+param: chitoi = 700
+param: kokushi = 700
+param: toitoi = 900
+param: tanyao = 900
+param: color = 900
+param: yaku = 700
+
+param: random = 50
+param: dora = 200
+param: zone = 500
+param: suji = 200
+param: yomi = 700
+
+param: kan = 400
+param: pon = 400
+param: tie = 400
+# result format
+#      NO  PNT  TN PN RN NN    TUMO        RON       FURI
