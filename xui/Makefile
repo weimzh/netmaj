@@ -22,8 +22,8 @@ G=-g
 # C Compiler options: Please compile ANSI C: -Xa or -ansi
 CCFLAGS=-DSMALL -DXNETMAJ -DX11=1
 # where X11
-X11INC=/usr/X11R6/include
-X11LIB=/usr/X11R6/lib
+X11INC=/opt/X11/include
+X11LIB=/opt/X11/lib
 RANLIB=ranlib
 INSTALL=install
 LIBS=

@@ -7,7 +7,7 @@ CC=cc
 CCFLAGS=-ansi
 G=-g 
 RANLIB=ranlib
-X11INC=/usr/X11R6/include
+X11INC=/opt/X11/include
 
 SRC = 	pixcont.c core.c 	_3d.c	conf.c \
 	item.c	\

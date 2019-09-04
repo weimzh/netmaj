@@ -2,7 +2,7 @@ CC=cc
 CCFLAGS=-ansi
 G=-g 
 RANLIB=ranlib
-X11INC=/usr/X11R6/include
+X11INC=/opt/X11/include
 OBJ=x11gdev.o x11rend.o x11sfx.o x11gc.o x11jpstr.o
 CFLAGS=-I$(X11INC) -I.. -I../.. -I. -I../include -DX11 $(G) $(CCFLAGS)
 

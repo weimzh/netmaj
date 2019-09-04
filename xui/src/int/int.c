@@ -311,7 +311,7 @@ interp (expr_t p)
 	  integer_t op = xop (car (p));
 	  interp_special_form (op, cdr (p));
 	}
-      return;
+      return 0;
       abort ();
       break;
     case id_ident:

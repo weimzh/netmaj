@@ -3,8 +3,8 @@
 CC=cc
 CCFLAGS=-DSMALL -DXNETMAJ -DX11=1 -DNETMAJ_LIB=\"$(LIBDIR)\" 
 G=-O -g
-X11INC=/usr/X11R6/include
-X11LIB=/usr/X11R6/lib
+X11INC=/opt/X11/include
+X11LIB=/opt/X11/lib
 BINDIR=/usr/games
 LIBDIR=/usr/lib/games/netmaj
 LIBS=

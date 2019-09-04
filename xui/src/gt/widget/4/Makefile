@@ -4,7 +4,7 @@
 CC=cc
 CCFLAGS=-ansi
 G=-g 
-X11INC=/usr/X11R6/include
+X11INC=/opt/X11/include
 
 SRC = 	pixbox.c pixmap4.c
 OBJ=$(SRC:.c=.o)

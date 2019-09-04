@@ -288,7 +288,7 @@ loop:
         {
           ask_attr = T_HN_KAN;
           ask_pai = pais[0];
-          return;
+          return 0;
         }
       ret = choice (gp, i, i, args, CH_TIE, 0);
       if (ret == X_CANCEL)
@@ -301,7 +301,7 @@ loop:
         }
       ask_pai = pais[ret];
       ask_attr = T_HN_KAN;
-      return;
+      return 0;
     }
   else if (ret == X_TUMO)
     {

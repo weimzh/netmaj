@@ -8,7 +8,7 @@
 CC=cc
 CCFLAGS=-ansi
 G=-g 
-X11=/usr/X11R6
+X11=/opt/X11
 RANLIB=ranlib
 
 OBJ=error.o xmalloc.o
