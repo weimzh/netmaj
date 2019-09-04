@@ -6,7 +6,7 @@ SHELL=/bin/sh
 # Install Directory
 PREFIX=/usr
 LIBDIR=$(PREFIX)/lib/games/netmaj
-BINDIR=$(PREFIX)/games
+BINDIR=$(PREFIX)/bin
 PERL=perl
 
 STD_CFLAGS=-I. -Ilib -DNETMAJ_LIB=\"$(LIBDIR)\" 
@@ -57,7 +57,7 @@ proxyserver:  proxyserver.o ss.o
 
 x:
 	-if test -d xui; then \
-	(cd xui; make CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
+	(cd xui; make PREFIX="$(PREFIX)" CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
 	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR) \
 	BINDIR="$(BINDIR)" \
 	"); fi
@@ -72,14 +72,14 @@ install: all
 	cp server auto server_kill ${DESTDIR}$(LIBDIR)
 	cp proxyserver proxyclient ${DESTDIR}$(LIBDIR)
 	-if test -d xui; then \
-	(cd xui; make install CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
+	(cd xui; make PREFIX="$(PREFIX)" install CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
 	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR)" \
 	BINDIR="$(BINDIR)" \
 	DESTDIR="$(DESTDIR)" \
 	); fi
 	cp pf/*.pf ${DESTDIR}$(LIBDIR)
 	-if test -d xui; then \
-	(cd xui; make install-pf CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
+	(cd xui; make install-pf PREFIX="$(PREFIX)" CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
 	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR)" \
 	BINDIR="$(BINDIR)" \
 	DESTDIR="$(DESTDIR)" \

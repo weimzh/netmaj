@@ -1,12 +1,13 @@
 .SUFFIXES: .c .o 
 
+PREFIX=/usr
 CC=cc
 CCFLAGS=-DSMALL -DXNETMAJ -DX11=1 -DNETMAJ_LIB=\"$(LIBDIR)\" 
 G=-O -g
 X11INC=/opt/X11/include
 X11LIB=/opt/X11/lib
-BINDIR=/usr/games
-LIBDIR=/usr/lib/games/netmaj
+BINDIR=${PREFIX}/bin
+LIBDIR=${PREFIX}/lib/games/netmaj
 LIBS=
 
 GT=../gt

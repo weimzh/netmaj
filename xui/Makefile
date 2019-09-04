@@ -29,17 +29,17 @@ INSTALL=install
 LIBS=
 CFLAGS=
 PREFIX=/usr
-BINDIR=$(PREFIX)/games
+BINDIR=$(PREFIX)/bin
 LIBDIR=$(PREFIX)/lib/games/netmaj
 DESKTOPDIR=$(PREFIX)/share/applications
 CP1=$(INSTALL) -s
 CP2=$(INSTALL) -c
 
 all:
-	-(cd src/gt; make CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)" X11INC="$(X11INC)" X11LIB="$(X11LIB)" RANLIB="$(RANLIB)")
-	-(cd src/util; make CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)" RANLIB="$(RANLIB)" )
-	-(cd src/int; make CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)"  RANLIB="$(RANLIB)" )
-	-(cd src/xui; make CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)" X11INC="$(X11INC)" X11LIB="$(X11LIB)" RANLIB="$(RANLIB)" LIBS="$(LIBS)" OS_CFLAGS="$(OS_CFLAGS)" BINDIR=$(BINDIR) LIBDIR=$(LIBDIR))
+	-(cd src/gt; make PREFIX="$(PREFIX)" CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)" X11INC="$(X11INC)" X11LIB="$(X11LIB)" RANLIB="$(RANLIB)")
+	-(cd src/util; make PREFIX="$(PREFIX)" CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)" RANLIB="$(RANLIB)" )
+	-(cd src/int; make PREFIX="$(PREFIX)" CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)"  RANLIB="$(RANLIB)" )
+	-(cd src/xui; make PREFIX="$(PREFIX)" CC="$(CC)" G="$(G)" CCFLAGS="$(CCFLAGS)" X11INC="$(X11INC)" X11LIB="$(X11LIB)" RANLIB="$(RANLIB)" LIBS="$(LIBS)" OS_CFLAGS="$(OS_CFLAGS)" BINDIR=$(BINDIR) LIBDIR=$(LIBDIR))
 
 clean:
 	-(cd src/gt; make -k clean)
