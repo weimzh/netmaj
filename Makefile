@@ -56,11 +56,8 @@ proxyserver:  proxyserver.o ss.o
 	$(CC) -o proxyserver proxyserver.o ss.o $(LDFLAGS) $(LIBS)
 
 x:
-	-if test -d xui; then \
-	(cd xui; make PREFIX="$(PREFIX)" CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
-	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR) \
-	BINDIR="$(BINDIR)" \
-	"); fi
+	cd xui; make PREFIX="$(PREFIX)" CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
+	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR)" BINDIR="$(BINDIR)"
 
 install: all
 	-if test ! -d ${DESTDIR}${BINDIR}; then \
@@ -71,19 +68,15 @@ install: all
 	cp netmaj ${DESTDIR}$(BINDIR)
 	cp server auto server_kill ${DESTDIR}$(LIBDIR)
 	cp proxyserver proxyclient ${DESTDIR}$(LIBDIR)
-	-if test -d xui; then \
-	(cd xui; make PREFIX="$(PREFIX)" install CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
+	cd xui; make PREFIX="$(PREFIX)" install CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
 	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR)" \
 	BINDIR="$(BINDIR)" \
-	DESTDIR="$(DESTDIR)" \
-	); fi
+	DESTDIR="$(DESTDIR)"
 	cp pf/*.pf ${DESTDIR}$(LIBDIR)
-	-if test -d xui; then \
-	(cd xui; make install-pf PREFIX="$(PREFIX)" CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
+	cd xui; make install-pf PREFIX="$(PREFIX)" CC="$(CC)" OS_CFLAGS="$(OS_CFLAGS)" \
 	RANLIB="$(RANLIB)" LIBS="$(LIBS)" LIBDIR="$(LIBDIR)" \
 	BINDIR="$(BINDIR)" \
-	DESTDIR="$(DESTDIR)" \
-	); fi
+	DESTDIR="$(DESTDIR)"
 
 netmaj: netmaj.in
 	sed -e "s|LIBDIR|$(LIBDIR)|" < netmaj.in | \
