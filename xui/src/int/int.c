@@ -34,6 +34,7 @@
  */
 
 /* interface file for nu */
+#define MAIN
 #include "nu.h"
 
 #define xnil nil()

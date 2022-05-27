@@ -39,7 +39,7 @@ extern int tonpu;
 
 FILE *logfile;
 FILE *log_server;
-FILE *plog = 0;
+extern FILE *plog;
 
 int getopt (int, char *const *, const char *);
 

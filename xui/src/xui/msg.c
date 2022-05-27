@@ -360,8 +360,6 @@ ui_message_naki (i, kind)
     }
 }
 
-integer_t flag_pause;
-
 void
 wait4key ()
 {

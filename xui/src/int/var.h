@@ -36,8 +36,6 @@
 /*
  * global variable definition and declaration
  */
-#define MAIN
-
 #ifdef MAIN
 #define xextern
 #else
