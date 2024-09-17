@@ -39,6 +39,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #ifdef OLD_SELECT
 typedef int fd_set;

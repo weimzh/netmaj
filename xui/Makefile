@@ -20,7 +20,7 @@ CC=gcc
 # Debugging option or Optimization Option
 G=-g
 # C Compiler options: Please compile ANSI C: -Xa or -ansi
-CCFLAGS=-DSMALL -DXNETMAJ -DX11=1
+CCFLAGS=-DSMALL -DXNETMAJ -DX11=1 -fpermissive
 # where X11
 X11INC=/opt/X11/include
 X11LIB=/opt/X11/lib
